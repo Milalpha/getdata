@@ -55,11 +55,13 @@ Below are all steps done in the script and their meaning.
 <p>Order the merged dataset by Subject and Activity.</p>
     Dataset <- arrange(rawData,Subject, Activity)  
 </br>
-<h4># Extracting only the measurements on the mean and standard deviation for each measurement</h4>   
+<h4># Extracting mean and standard deviation for each measurement</h4>   
+<p>Finding variables with mean and std (standard deviation) in the name. Excluding meanFreq as we need only mean of measurements.</p>
     meanStd <- grep("mean|std", features)
     a <- grep("meanFreq", features)
     b <- setdiff(meanStd, a)
     b <- b + 2
+<p>A new dataset with only mean and std data for each measurement.</p>  
     Dataset <- select(Dataset, 1:2, b)
 </br>
 <h4># Using descriptive activity names to name the activities in the data set</h4>  
@@ -71,6 +73,7 @@ Below are all steps done in the script and their meaning.
     Dataset$Activity[Dataset$Activity=='6'] <- 'LAYING'  
 </br>
 <h4># Appropriately labeling the data set with descriptive variable full names</h4>  
+<p>Editing label names of variables - renaming truncated and abbreviated labels, getting rid of undescriptive symbols.</p>  
     n <- names(Dataset)
     names(Dataset)<-gsub("\\()","",names(Dataset))
     names(Dataset)<-gsub("-"," ",names(Dataset))
@@ -88,6 +91,7 @@ Below are all steps done in the script and their meaning.
     names(Dataset)<-gsub("[0-9]", "", names(Dataset))  
 </br>
 <h4># From the data set in step 4, creating a second, independent tidy data set with the average of each variable for each activity and each subject</h4>  
+<p>_aggregate_ function aggregates data by Subject and Acticity and merges the results. Then  data in a new data frame is ordered by Subject and Activity again.</p>  
     TidyData <- aggregate(. ~Subject + Activity, Dataset, mean)
     TidyData <- arrange(TidyData, Subject, Activity)  
 </br>

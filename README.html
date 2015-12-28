@@ -137,24 +137,33 @@ Merging two combined datasets by rows.
 <pre><code>rawData &lt;- rbind(testData, trainData)  </code></pre>
 </br>
 <h4>
-# Listing of all features
+# List of all features
 </h4>
 <pre><code>features &lt;- readLines (&quot;~/DScoursera/UCI HAR Dataset/features.txt&quot;)  </code></pre>
 </br>
 <h4>
 # Assigning names to columns
 </h4>
-<pre><code>colnames(rawData) &lt;- c(&quot;Subject&quot;,&quot;Activity&quot;, features)
-Dataset &lt;- arrange(rawData,Subject, Activity)  </code></pre>
+<pre><code>colnames(rawData) &lt;- c(&quot;Subject&quot;,&quot;Activity&quot;, features)</code></pre>
+<p>
+Order the merged dataset by Subject and Activity.
+</p>
+<pre><code>Dataset &lt;- arrange(rawData,Subject, Activity)  </code></pre>
 </br>
 <h4>
-# Extracting only the measurements on the mean and standard deviation for each measurement
+# Extracting mean and standard deviation for each measurement
 </h4>
+<p>
+Finding variables with mean and std (standard deviation) in the name. Excluding meanFreq as we need only mean of measurements.
+</p>
 <pre><code>meanStd &lt;- grep(&quot;mean|std&quot;, features)
 a &lt;- grep(&quot;meanFreq&quot;, features)
 b &lt;- setdiff(meanStd, a)
-b &lt;- b + 2
-Dataset &lt;- select(Dataset, 1:2, b)</code></pre>
+b &lt;- b + 2</code></pre>
+<p>
+A new dataset with only mean and std data for each measurement.
+</p>
+<pre><code>Dataset &lt;- select(Dataset, 1:2, b)</code></pre>
 </br>
 <h4>
 # Using descriptive activity names to name the activities in the data set
@@ -169,6 +178,9 @@ Dataset$Activity[Dataset$Activity=='6'] &lt;- 'LAYING'  </code></pre>
 <h4>
 # Appropriately labeling the data set with descriptive variable full names
 </h4>
+<p>
+Editing label names of variables - renaming truncated and abbreviated labels, getting rid of undescriptive symbols.
+</p>
 <pre><code>n &lt;- names(Dataset)
 names(Dataset)&lt;-gsub(&quot;\\()&quot;,&quot;&quot;,names(Dataset))
 names(Dataset)&lt;-gsub(&quot;-&quot;,&quot; &quot;,names(Dataset))
@@ -188,6 +200,9 @@ names(Dataset)&lt;-gsub(&quot;[0-9]&quot;, &quot;&quot;, names(Dataset))  </code
 <h4>
 # From the data set in step 4, creating a second, independent tidy data set with the average of each variable for each activity and each subject
 </h4>
+<p>
+<em>aggregate</em> function aggregates data by Subject and Acticity and merges the results. Then data in a new data frame is ordered by Subject and Activity again.
+</p>
 <pre><code>TidyData &lt;- aggregate(. ~Subject + Activity, Dataset, mean)
 TidyData &lt;- arrange(TidyData, Subject, Activity)  </code></pre>
 </br>
